@@ -1,3 +1,6 @@
+Thank you to arXiv for use of its open access interoperability.
+This project is not endorsed by arXiv or its associates.
+
 ![arXiv CLI Search Logo](images/logo.png)
 
 # arXiv CLI Search
