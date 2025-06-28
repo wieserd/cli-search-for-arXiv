@@ -1,5 +1,3 @@
-Thank you to arXiv for use of its open access interoperability.
-This project is not endorsed by arXiv or its associates.
 
 ![arXiv CLI Search Logo](images/logo.png)
 
@@ -115,6 +113,11 @@ arxiv_cli_search/
         ├── __init__.py     # Python package marker
         └── main.py         # Main CLI logic and user interaction
 ```
+
+## Disclaimer
+
+* This project is not endorsed by arXiv or its associates.
+* Thank you to arXiv for use of its open access interoperability.
 
 ## License
 
