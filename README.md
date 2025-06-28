@@ -12,6 +12,7 @@
 *   **Enhanced Visuals:** Features a custom, colored ASCII art arXiv logo at startup and animated loading indicators during API calls, powered by the `rich` library.
 *   **Paper Search:** Search arXiv by keywords with optional date range filtering.
 *   **"I'm Feeling Lucky" Option:** Discover random papers with a single command.
+*   **Expand Functionality:** Dive deeper into a paper by expanding on it to find related articles based on its keywords. This creates a new search context for exploration.
 *   **Personal Library:** Build and manage a local collection of papers.
     *   Add papers from search results.
     *   View saved papers.
@@ -82,6 +83,7 @@ After selecting a paper from search results or your library, you can:
 *   `download` (or `1`): Download the PDF to the `data/downloads/` directory.
 *   `add to library` (or `2`): Add the paper to your `library.json` (if not already there).
 *   `remove from library` (or `2`): Remove the paper from your `library.json` (if it's a library paper).
+*   `expand` (or `e`): Find and display related papers based on the selected paper's keywords.
 *   `b` (or `back`): Return to the previous list.
 *   `exit` (or `exit arxiv searcher`): Exit the program.
 

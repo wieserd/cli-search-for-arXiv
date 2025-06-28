@@ -52,3 +52,15 @@ def search_arxiv(query, max_results=10, start_date=None, end_date=None, start=0)
             "categories": [tag.term for tag in entry.tags]
         })
     return papers
+
+def _extract_keywords(paper):
+    # Combine relevant fields
+    text_to_process = f"{paper['title']} {paper['summary']}"
+    # Add categories as well
+    text_to_process += " " + " ".join(paper['categories'])
+
+    # Simple tokenization and lowercasing
+    words = [word.lower() for word in text_to_process.split() if len(word) > 2] # Filter short words
+
+    # Join with OR for arXiv API
+    return " OR ".join(list(set(words))) # Use set to remove duplicates
