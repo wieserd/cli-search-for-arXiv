@@ -49,7 +49,7 @@ python run.py
 The program will present you with a main menu, starting with a visually enhanced arXiv logo:
 
 ```
-# (Your new ASCII art logo will appear here)
+# ASCII art logo will appear here
 
 --- arXiv CLI Search ---
 1. Search Papers
