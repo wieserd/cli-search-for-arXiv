@@ -1,0 +1,17 @@
+[
+    {
+        "id": "2204.01187v1",
+        "title": "Ab Initio Nuclear Reaction Theory with Applications to Astrophysics",
+        "authors": [
+            "Petr Navratil",
+            "Sofia Quaglioni"
+        ],
+        "published": "2022-04-04T00:09:22Z",
+        "summary": "We present an introduction to ab initio nuclear theory with a focus on\nnuclear reactions. After a high-level overview of ab initio approaches in\nnuclear physics, we give a more detailed description of the no-core shell model\ntechnique equivalent to a large extent to configuration-interaction methods\napplied in quantum chemistry. We then introduce the no-core shell model with\ncontinuum approach that provides a quantum many-body description of nuclear\nreactions. After a brief review of nuclear reactions important for\nastrophysics, we present examples of results of ab initio calculations of\nradiative capture and transfer reactions in light nuclei.",
+        "pdf_url": "http://arxiv.org/pdf/2204.01187v1",
+        "categories": [
+            "nucl-th",
+            "nucl-ex"
+        ]
+    }
+]
