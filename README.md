@@ -1,5 +1,5 @@
-This is a personal project by Daniel Wieser.
-This software is not affiliated with arXiv or Cornell University.
+* This is a personal project by [Daniel Wieser](https://www.DanielWieser.com).
+* This software is *not* affiliated with arXiv or Cornell University.
 
 ![arXiv CLI Search Logo](images/logo.png)
 
