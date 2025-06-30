@@ -28,7 +28,7 @@
 
 1.  **Clone the repository (or download the project files):**
     ```bash
-    git clone <repository_url>
+    git clone https://github.com/wieserd/arXiv-cli-search
     cd arxiv_cli_search
     ```
     *(Note: Replace `<repository_url>` with the actual URL if this project is hosted on Git.)*
