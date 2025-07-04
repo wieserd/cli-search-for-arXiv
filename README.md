@@ -22,8 +22,8 @@
     *   Filter library by keywords (title, authors, summary).
     *   Sort library by publication date, title, or authors.
     *   Remove papers from the library.
-*   **PDF Download:** Download individual paper PDFs.
-*   **Bulk Download:** Download all papers from your current filtered/sorted library view with a 3-second delay between downloads to respect arXiv API terms.
+*   **PDF Download:** Download individual paper PDFs. A 3-second delay is introduced before each download to respect arXiv API guidelines.
+*   **Bulk Download:** Download all papers from your current filtered/sorted library view, with a 3-second delay between each download to respect arXiv API terms.
 *   **Detailed Paper View:** Display comprehensive details for any selected paper, including abstract and PDF URL.
 
 ## Installation
@@ -56,19 +56,51 @@ The program will present you with a main menu, starting with a visually enhanced
 
 ### Command-Line Search Mode
 
-To perform a direct search from the command line, use the `--query` argument. You can also optionally specify a date range using `--start-date` and `--end-date`.
+To perform a direct search from the command line, use the `--query`, `--author`, or `--title` arguments. You can combine these, and also optionally specify a date range using `--start-date` and `--end-date`.
 
 ```bash
-python run.py --query "your search terms" [--start-date YYYY-MM-DD] [--end-date YYYY-MM-DD]
+python run.py [--query "your search terms"] [--author "Author Name"] [--title "Paper Title Keywords"] [--start-date YYYY-MM-DD] [--end-date YYYY-MM-DD]
+```
+
+**Examples:**
+
+*   Search for "quantum computing":
+    ```bash
+    python run.py --query "quantum computing"
+    ```
+
+*   Search for papers by "John Doe":
+    ```bash
+    python run.py --author "John Doe"
+    ```
+
+*   Search for papers with "machine learning" in the title published between 2023 and 2024:
+    ```bash
+    python run.py --title "machine learning" --start-date 2023-01-01 --end-date 2024-12-31
+    ```
+
+*   Combine a general query with an author:
+    ```bash
+    python run.py --query "neural networks" --author "Geoffrey Hinton"
+    ```
+
+After executing a command-line search, the results will be displayed, and the program will exit.
+
+### Command-Line Download Mode
+
+To directly download a paper using its arXiv ID, use the `--download-id` argument:
+
+```bash
+python run.py --download-id "arXiv_ID"
 ```
 
 Example:
 
 ```bash
-python run.py --query "quantum entanglement" --start-date 2020-01-01 --end-date 2020-12-31
+python run.py --download-id "2301.00001"
 ```
 
-After executing a command-line search, the results will be displayed, and the program will exit.
+After the download is complete, the program will exit.
 
 ```
 # ASCII art logo will appear here

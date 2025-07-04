@@ -29,10 +29,10 @@ To execute a search in interactive mode, enter `1` or `search` at the prompt and
 
 ### Command-Line Search Mode
 
-You can also perform a direct search from the command line without entering the interactive menu. Use the `--query` argument for your search terms. You can optionally specify a date range using `--start-date` and `--end-date`.
+You can also perform a direct search from the command line without entering the interactive menu. Use the `--query`, `--author`, or `--title` arguments. You can combine these, and also optionally specify a date range using `--start-date` and `--end-date`.
 
 ```bash
-python run.py --query "your search terms" [--start-date YYYY-MM-DD] [--end-date YYYY-MM-DD]
+python run.py [--query "your search terms"] [--author "Author Name"] [--title "Paper Title Keywords"] [--start-date YYYY-MM-DD] [--end-date YYYY-MM-DD]
 ```
 
 **Examples:**
@@ -42,9 +42,19 @@ python run.py --query "your search terms" [--start-date YYYY-MM-DD] [--end-date 
     python run.py --query "quantum computing"
     ```
 
-*   Search for "machine learning" published between 2023 and 2024:
+*   Search for papers by "John Doe":
     ```bash
-    python run.py --query "machine learning" --start-date 2023-01-01 --end-date 2024-12-31
+    python run.py --author "John Doe"
+    ```
+
+*   Search for papers with "machine learning" in the title published between 2023 and 2024:
+    ```bash
+    python run.py --title "machine learning" --start-date 2023-01-01 --end-date 2024-12-31
+    ```
+
+*   Combine a general query with an author:
+    ```bash
+    python run.py --query "neural networks" --author "Geoffrey Hinton"
     ```
 
 After executing a command-line search, the results will be displayed, and the program will exit.
@@ -53,19 +63,31 @@ After executing a command-line search, the results will be displayed, and the pr
 
 The `arxiv_cli_search` tool accepts the following arguments for search queries:
 
-*   **`--query` (Required for CLI search, interactive prompt for interactive mode):** This is the primary search term. The arXiv API, which the tool uses, searches across various fields including **title**, **abstract**, and **authors**. Therefore, including author names or specific title words in your main `--query` will yield relevant results.
-*   **`--start-date` (Optional):** The start date for filtering search results by publication date in `YYYY-MM-DD` format. Only applicable in command-line search mode.
-*   **`--end-date` (Optional):** The end date for filtering search results by publication date in `YYYY-MM-DD` format. Only applicable in command-line search mode.
+*   **`--query` (Optional for CLI search, interactive prompt for interactive mode):** This is a general keyword search. The arXiv API searches across various fields including title, abstract, and authors.
+    *   **Advanced Query Syntax:** You can use advanced arXiv query syntax directly within the `--query` string. For example, to search for a specific category, you can use `cat:cs.AI`. For more details on arXiv's search syntax, refer to the official arXiv API documentation.
+*   **`--author` (Optional for CLI search, interactive prompt for interactive mode):** Search for papers by a specific author. Use the author's full name or a part of it.
+*   **`--title` (Optional for CLI search, interactive prompt for interactive mode):** Search for papers with specific keywords in their title.
+*   **`--start-date` (Optional):** The start date for filtering search results by publication date in `YYYY-MM-DD` format. Applicable in both command-line and interactive search modes.
+*   **`--end-date` (Optional):** The end date for filtering search results by publication date in `YYYY-MM-DD` format. Applicable in both command-line and interactive search modes.
 
-**Note:** The program does not currently support direct, separate arguments for filtering by specific fields like "author" or "title" (e.g., `--author "John Doe"`). However, as mentioned above, the `--query` argument will search across these fields.
+**Default Search Behavior:**
+*   By default, searches return up to 10 results.
+*   Results are sorted by relevance in descending order.
+*   The tool does not currently support command-line arguments to modify the number of results or the sorting order.
+
+**Note:** At least one of `--query`, `--author`, or `--title` must be provided for a search to be performed.
 
 ## 3. How to Download a Paper
 
-Paper downloading is supported. After performing a search or viewing your library, you can select a specific paper to view its details. From the detailed paper view, you will have the option to download the PDF.
+Paper downloading is supported through two methods:
 
-**Steps to Download:**
+### A. Interactive Download
 
-1.  **Perform a search** (as described above) or **View your Library** (by selecting option `2` from the main menu).
+After performing a search or viewing your library, you can select a specific paper to view its details. From the detailed paper view, you will have the option to download the PDF.
+
+**Steps to Download Interactively:**
+
+1.  **Perform a search** (as described in Section 1) or **View your Library** (by selecting option `2` from the main menu).
 2.  **Select a paper:** From the list of search results or library papers, enter the corresponding number of the paper you wish to view and download.
 3.  **Download:** In the detailed paper view, you will see options. Enter `download` or `1` to download the PDF.
 
@@ -83,8 +105,28 @@ exit. Exit arXiv Searcher
 Enter your choice:
 ```
 
-## 4. Typical Output Format of Downloaded Papers
+### B. Command-Line Download by arXiv ID
+
+You can directly download a paper using its arXiv ID from the command line without entering the interactive menu. Use the `--download-id` argument:
+
+```bash
+python run.py --download-id "arXiv_ID"
+```
+
+**Example:**
+
+```bash
+python run.py --download-id "2301.00001"
+```
+
+After the download is complete, the program will exit.
+
+## 4. Data Storage and Output Format
 
 Downloaded papers are saved in **PDF format (`.pdf`)**.
 
-By default, downloaded PDFs are saved to the `data/downloads/` directory within the `cli-search-for-arXiv` project folder.
+**Important Note on Downloads:** To comply with arXiv's API guidelines and ensure responsible usage, the tool introduces a 3-second delay before each PDF download. This applies to both interactive and command-line downloads.
+
+### Data Storage Locations:
+*   **`library.json`:** Your saved papers are stored in this file within the project's `data/` directory (e.g., `cli-search-for-arXiv/data/library.json`).
+*   **`downloads/`:** Downloaded PDFs are saved in this directory within the project's `data/` directory (e.g., `cli-search-for-arXiv/data/downloads/`).

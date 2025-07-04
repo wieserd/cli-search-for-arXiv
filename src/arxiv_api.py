@@ -4,29 +4,38 @@ from datetime import datetime
 
 ARXIV_API_URL = "http://export.arxiv.org/api/query"
 
-def search_arxiv(query, max_results=10, start_date=None, end_date=None, start=0):
+def search_arxiv(query=None, author=None, title=None, max_results=10, start_date=None, end_date=None, start=0):
+    search_parts = []
+    if query:
+        search_parts.append(query)
+    if author:
+        search_parts.append(f"au:{author}")
+    if title:
+        search_parts.append(f"ti:{title}")
+
+    if not search_parts:
+        raise ValueError("At least one search parameter (query, author, or title) must be provided.")
+
+    combined_query = " AND ".join(search_parts)
+
     params = {
-        "search_query": query,
+        "search_query": combined_query,
         "max_results": max_results,
         "sortBy": "relevance",
         "sortOrder": "descending",
-        "start": start # Added start parameter for pagination
+        "start": start
     }
 
     # Add date range to query if provided
     if start_date and end_date:
-        # arXiv API expects YYYYMMDDHHMMSS format
-        # Assuming start_date and end_date are datetime objects or YYYY-MM-DD strings
-        # For simplicity, let's assume YYYY-MM-DD strings for now and convert
         try:
             start_dt = datetime.strptime(start_date, "%Y-%m-%d")
             end_dt = datetime.strptime(end_date, "%Y-%m-%d")
-            # Set time to start of day for start_date and end of day for end_date
             start_arxiv_format = start_dt.strftime("%Y%m%d000000")
             end_arxiv_format = end_dt.strftime("%Y%m%d235959")
             
             # Combine original query with date range
-            params["search_query"] = f"{query} AND submittedDate:[{start_arxiv_format} TO {end_arxiv_format}]"
+            params["search_query"] = f"{combined_query} AND submittedDate:[{start_arxiv_format} TO {end_arxiv_format}]"
         except ValueError:
             print("Warning: Invalid date format. Date range filter will be ignored.")
 

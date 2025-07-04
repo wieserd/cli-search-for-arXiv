@@ -54,11 +54,11 @@ def play_theme():
     except Exception as e:
         print(f"Error opening web browser: {e}")
 
-def _perform_search_and_display(query, start_date=None, end_date=None):
+def _perform_search_and_display(query=None, author=None, title=None, start_date=None, end_date=None):
     loading_animation = LoadingAnimation("Searching arXiv")
     loading_animation.start()
     try:
-        papers = search_arxiv(query, start_date=start_date, end_date=end_date)
+        papers = search_arxiv(query=query, author=author, title=title, start_date=start_date, end_date=end_date)
         loading_animation.stop()
         if not papers:
             print("No papers found for your query.")
@@ -70,21 +70,56 @@ def _perform_search_and_display(query, start_date=None, end_date=None):
         loading_animation.stop()
         print(f"Error connecting to arXiv API: {e}")
         return []
+    except ValueError as e:
+        loading_animation.stop()
+        print(f"Search error: {e}")
+        return []
     except Exception as e:
         loading_animation.stop()
         print(f"An unexpected error occurred during search: {e}")
         return []
 
-def perform_cli_search(query, start_date=None, end_date=None):
+def perform_cli_search(query=None, author=None, title=None, start_date=None, end_date=None):
     print_arxiv_logo()
-    print(f"Performing CLI search for: '{query}'")
+    print("Performing CLI search...")
+    if query: print(f"Query: '{query}'")
+    if author: print(f"Author: '{author}'")
+    if title: print(f"Title: '{title}'")
     if start_date and end_date:
         print(f"Date range: {start_date} to {end_date}")
-    _perform_search_and_display(query, start_date, end_date)
+    _perform_search_and_display(query, author, title, start_date, end_date)
     print("CLI search complete.")
 
+def perform_cli_download(arxiv_id):
+    print_arxiv_logo()
+    print(f"Attempting to download paper with arXiv ID: {arxiv_id}")
+    try:
+        # Search for the paper by its ID
+        papers = search_arxiv(query=f"id:{arxiv_id}", max_results=1)
+        if papers:
+            paper = papers[0]
+            if paper['pdf_url']:
+                print(f"Found paper: {paper['title']}.")
+                print("Waiting 3 seconds before download to respect arXiv guidelines...")
+                time.sleep(3)
+                download_pdf(paper['pdf_url'], paper['id'])
+                print("Download complete.")
+            else:
+                print(f"PDF URL not available for paper {arxiv_id}.")
+        else:
+            print(f"Paper with arXiv ID {arxiv_id} not found.")
+    except requests.exceptions.RequestException as e:
+        print(f"Error connecting to arXiv API: {e}")
+    except Exception as e:
+        print(f"An unexpected error occurred during download: {e}")
+    print("CLI download process finished.")
+
 def search_papers_menu():
-    query = input("Enter search query: ")
+    print("\n--- Interactive Search ---")
+    query = input("Enter general keywords (optional): ").strip()
+    author = input("Enter author name (optional): ").strip()
+    title = input("Enter title keywords (optional): ").strip()
+
     start_date = None
     end_date = None
 
@@ -102,7 +137,12 @@ def search_papers_menu():
             except ValueError:
                 print("Invalid date format. Please use YYYY-MM-DD.")
 
-    papers = _perform_search_and_display(query, start_date, end_date)
+    # Ensure at least one search parameter is provided for interactive search
+    if not query and not author and not title:
+        print("At least one of general keywords, author, or title must be provided for search.")
+        return
+
+    papers = _perform_search_and_display(query if query else None, author if author else None, title if title else None, start_date, end_date)
     if not papers:
         return
         
@@ -192,58 +232,6 @@ def expand_on_paper(paper):
         loading_animation.stop()
         print(f"An unexpected error occurred: {e}")
 
-def feeling_lucky_menu():
-    print("Fetching 10 random papers...")
-    loading_animation = LoadingAnimation("Fetching random papers")
-    loading_animation.start()
-    try:
-        # Use a very broad query to get diverse results
-        papers = search_arxiv(query="all:the", max_results=10)
-        loading_animation.stop()
-        if not papers:
-            print("Could not fetch random papers.")
-            return
-        
-        print_papers_list(papers)
-
-        while True:
-            print("\n--- Lucky Papers Options ---")
-            print("Enter paper number for details/actions, 'b' to go back, 'e' to expand, or 'exit' to quit.")
-            action = input("Your choice: ").lower().strip()
-
-            if action == 'b' or action == 'back':
-                break
-            elif action == 'e' or action == 'expand':
-                expand_action = input("Enter paper number to expand on: ").lower().strip()
-                try:
-                    paper_index = int(expand_action) - 1
-                    if 0 <= paper_index < len(papers):
-                        selected_paper = papers[paper_index]
-                        expand_on_paper(selected_paper) # Recursive call for further expansion
-                    else:
-                        print("Invalid paper number.")
-                except ValueError:
-                    print("Invalid input. Please enter a number.")
-            elif action == 'exit' or action == 'exit arxiv searcher':
-                raise ExitProgram
-            
-            try:
-                paper_index = int(action) - 1
-                if 0 <= paper_index < len(papers):
-                    selected_paper = papers[paper_index]
-                    handle_paper_actions(selected_paper)
-                else:
-                    print("Invalid paper number.")
-            except ValueError:
-                print("Invalid input. Please enter a number, 'b', 'e', or 'exit'.")
-
-    except requests.exceptions.RequestException as e:
-        loading_animation.stop()
-        print(f"Error connecting to arXiv API: {e}")
-    except Exception as e:
-        loading_animation.stop()
-        print(f"An unexpected error occurred: {e}")
-
 def bulk_download_papers(papers_to_download):
     if not papers_to_download:
         print("No papers to download in the current view.")
@@ -253,10 +241,9 @@ def bulk_download_papers(papers_to_download):
     for i, paper in enumerate(papers_to_download):
         print(f"Downloading {i+1}/{len(papers_to_download)}: {paper['title']} ({paper['id']})")
         if paper['pdf_url']:
+            print("Waiting 3 seconds before download to respect arXiv guidelines...")
+            time.sleep(3)
             download_pdf(paper['pdf_url'], paper['id'])
-            if i < len(papers_to_download) - 1: # Don't delay after the last download
-                print("Waiting 3 seconds...")
-                time.sleep(3)
         else:
             print(f"PDF URL not available for {paper['title']}.")
     print("Bulk download complete.")
@@ -340,6 +327,8 @@ def handle_paper_actions(paper, is_library_paper=False):
 
         if action == '1' or action == 'download':
             if paper['pdf_url']:
+                print("Waiting 3 seconds before download to respect arXiv guidelines...")
+                time.sleep(3)
                 download_pdf(paper['pdf_url'], paper['id'])
             else:
                 print("PDF URL not available for this paper.")
