@@ -119,4 +119,6 @@ After the download is complete, the program will exit.
 
 Downloaded papers are saved in **PDF format (`.pdf`)**.
 
+**Important Note on Downloads:** To comply with arXiv's API guidelines and ensure responsible usage, the tool introduces a 3-second delay before each PDF download. This applies to both interactive and command-line downloads.
+
 By default, downloaded PDFs are saved to the `data/downloads/` directory within the `cli-search-for-arXiv` project folder.
