@@ -99,7 +99,9 @@ def perform_cli_download(arxiv_id):
         if papers:
             paper = papers[0]
             if paper['pdf_url']:
-                print(f"Found paper: {paper['title']}. Downloading...")
+                print(f"Found paper: {paper['title']}.")
+                print("Waiting 3 seconds before download to respect arXiv guidelines...")
+                time.sleep(3)
                 download_pdf(paper['pdf_url'], paper['id'])
                 print("Download complete.")
             else:
@@ -230,58 +232,6 @@ def expand_on_paper(paper):
         loading_animation.stop()
         print(f"An unexpected error occurred: {e}")
 
-def feeling_lucky_menu():
-    print("Fetching 10 random papers...")
-    loading_animation = LoadingAnimation("Fetching random papers")
-    loading_animation.start()
-    try:
-        # Use a very broad query to get diverse results
-        papers = search_arxiv(query="all:the", max_results=10)
-        loading_animation.stop()
-        if not papers:
-            print("Could not fetch random papers.")
-            return
-        
-        print_papers_list(papers)
-
-        while True:
-            print("\n--- Lucky Papers Options ---")
-            print("Enter paper number for details/actions, 'b' to go back, 'e' to expand, or 'exit' to quit.")
-            action = input("Your choice: ").lower().strip()
-
-            if action == 'b' or action == 'back':
-                break
-            elif action == 'e' or action == 'expand':
-                expand_action = input("Enter paper number to expand on: ").lower().strip()
-                try:
-                    paper_index = int(expand_action) - 1
-                    if 0 <= paper_index < len(papers):
-                        selected_paper = papers[paper_index]
-                        expand_on_paper(selected_paper) # Recursive call for further expansion
-                    else:
-                        print("Invalid paper number.")
-                except ValueError:
-                    print("Invalid input. Please enter a number.")
-            elif action == 'exit' or action == 'exit arxiv searcher':
-                raise ExitProgram
-            
-            try:
-                paper_index = int(action) - 1
-                if 0 <= paper_index < len(papers):
-                    selected_paper = papers[paper_index]
-                    handle_paper_actions(selected_paper)
-                else:
-                    print("Invalid paper number.")
-            except ValueError:
-                print("Invalid input. Please enter a number, 'b', 'e', or 'exit'.")
-
-    except requests.exceptions.RequestException as e:
-        loading_animation.stop()
-        print(f"Error connecting to arXiv API: {e}")
-    except Exception as e:
-        loading_animation.stop()
-        print(f"An unexpected error occurred: {e}")
-
 def bulk_download_papers(papers_to_download):
     if not papers_to_download:
         print("No papers to download in the current view.")
@@ -291,10 +241,9 @@ def bulk_download_papers(papers_to_download):
     for i, paper in enumerate(papers_to_download):
         print(f"Downloading {i+1}/{len(papers_to_download)}: {paper['title']} ({paper['id']})")
         if paper['pdf_url']:
+            print("Waiting 3 seconds before download to respect arXiv guidelines...")
+            time.sleep(3)
             download_pdf(paper['pdf_url'], paper['id'])
-            if i < len(papers_to_download) - 1: # Don't delay after the last download
-                print("Waiting 3 seconds...")
-                time.sleep(3)
         else:
             print(f"PDF URL not available for {paper['title']}.")
     print("Bulk download complete.")
@@ -378,6 +327,8 @@ def handle_paper_actions(paper, is_library_paper=False):
 
         if action == '1' or action == 'download':
             if paper['pdf_url']:
+                print("Waiting 3 seconds before download to respect arXiv guidelines...")
+                time.sleep(3)
                 download_pdf(paper['pdf_url'], paper['id'])
             else:
                 print("PDF URL not available for this paper.")
