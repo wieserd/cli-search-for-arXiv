@@ -4,9 +4,11 @@ This document provides instructions on how to use the `arxiv_cli_search` command
 
 ## 1. Executing a Search
 
-The `arxiv_cli_search` tool is executed by running the `run.py` script. It provides an interactive menu for navigation, rather than accepting command-line arguments directly for search queries.
+The `arxiv_cli_search` tool can be executed in two ways:
 
-To start the program:
+### Interactive Mode
+
+To start the program with an interactive menu:
 
 ```bash
 python run.py
@@ -23,16 +25,39 @@ Once the program starts, you will be presented with a main menu:
 Enter your choice:
 ```
 
-To execute a search, enter `1` or `search` at the prompt and press Enter. The program will then guide you through the search process.
+To execute a search in interactive mode, enter `1` or `search` at the prompt and press Enter. The program will then guide you through the search process.
+
+### Command-Line Search Mode
+
+You can also perform a direct search from the command line without entering the interactive menu. Use the `--query` argument for your search terms. You can optionally specify a date range using `--start-date` and `--end-date`.
+
+```bash
+python run.py --query "your search terms" [--start-date YYYY-MM-DD] [--end-date YYYY-MM-DD]
+```
+
+**Examples:**
+
+*   Search for "quantum computing":
+    ```bash
+    python run.py --query "quantum computing"
+    ```
+
+*   Search for "machine learning" published between 2023 and 2024:
+    ```bash
+    python run.py --query "machine learning" --start-date 2023-01-01 --end-date 2024-12-31
+    ```
+
+After executing a command-line search, the results will be displayed, and the program will exit.
 
 ## 2. Search Query Arguments
 
-When you select the "Search Papers" option, the program will prompt you for your search query.
+The `arxiv_cli_search` tool accepts the following arguments for search queries:
 
-*   **Keywords:** You will be asked to enter keywords for your search. The arXiv API typically searches across various fields including title, abstract, and authors.
-*   **Date Range (Optional):** After entering keywords, you can optionally specify a date range (YYYY-MM-DD) to filter your search results.
+*   **`--query` (Required for CLI search, interactive prompt for interactive mode):** Keywords for your search. The arXiv API typically searches across various fields including title, abstract, and authors.
+*   **`--start-date` (Optional):** The start date for filtering search results in YYYY-MM-DD format. Only applicable in command-line search mode.
+*   **`--end-date` (Optional):** The end date for filtering search results in YYYY-MM-DD format. Only applicable in command-line search mode.
 
-The program does not currently support direct filtering by specific fields like "author" or "title" as separate arguments within the interactive search flow, but keywords will match against these fields.
+In interactive mode, you will be prompted for keywords and an optional date range. The program does not currently support direct filtering by specific fields like "author" or "title" as separate arguments within the interactive search flow, but keywords will match against these fields.
 
 ## 3. How to Download a Paper
 
