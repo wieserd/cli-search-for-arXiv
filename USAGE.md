@@ -64,10 +64,16 @@ After executing a command-line search, the results will be displayed, and the pr
 The `arxiv_cli_search` tool accepts the following arguments for search queries:
 
 *   **`--query` (Optional for CLI search, interactive prompt for interactive mode):** This is a general keyword search. The arXiv API searches across various fields including title, abstract, and authors.
+    *   **Advanced Query Syntax:** You can use advanced arXiv query syntax directly within the `--query` string. For example, to search for a specific category, you can use `cat:cs.AI`. For more details on arXiv's search syntax, refer to the official arXiv API documentation.
 *   **`--author` (Optional for CLI search, interactive prompt for interactive mode):** Search for papers by a specific author. Use the author's full name or a part of it.
 *   **`--title` (Optional for CLI search, interactive prompt for interactive mode):** Search for papers with specific keywords in their title.
 *   **`--start-date` (Optional):** The start date for filtering search results by publication date in `YYYY-MM-DD` format. Applicable in both command-line and interactive search modes.
 *   **`--end-date` (Optional):** The end date for filtering search results by publication date in `YYYY-MM-DD` format. Applicable in both command-line and interactive search modes.
+
+**Default Search Behavior:**
+*   By default, searches return up to 10 results.
+*   Results are sorted by relevance in descending order.
+*   The tool does not currently support command-line arguments to modify the number of results or the sorting order.
 
 **Note:** At least one of `--query`, `--author`, or `--title` must be provided for a search to be performed.
 
@@ -115,10 +121,12 @@ python run.py --download-id "2301.00001"
 
 After the download is complete, the program will exit.
 
-## 4. Typical Output Format of Downloaded Papers
+## 4. Data Storage and Output Format
 
 Downloaded papers are saved in **PDF format (`.pdf`)**.
 
 **Important Note on Downloads:** To comply with arXiv's API guidelines and ensure responsible usage, the tool introduces a 3-second delay before each PDF download. This applies to both interactive and command-line downloads.
 
-By default, downloaded PDFs are saved to the `data/downloads/` directory within the `cli-search-for-arXiv` project folder.
+### Data Storage Locations:
+*   **`library.json`:** Your saved papers are stored in this file within the project's `data/` directory (e.g., `cli-search-for-arXiv/data/library.json`).
+*   **`downloads/`:** Downloaded PDFs are saved in this directory within the project's `data/` directory (e.g., `cli-search-for-arXiv/data/downloads/`).
