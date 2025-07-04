@@ -53,11 +53,11 @@ After executing a command-line search, the results will be displayed, and the pr
 
 The `arxiv_cli_search` tool accepts the following arguments for search queries:
 
-*   **`--query` (Required for CLI search, interactive prompt for interactive mode):** Keywords for your search. The arXiv API typically searches across various fields including title, abstract, and authors.
-*   **`--start-date` (Optional):** The start date for filtering search results in YYYY-MM-DD format. Only applicable in command-line search mode.
-*   **`--end-date` (Optional):** The end date for filtering search results in YYYY-MM-DD format. Only applicable in command-line search mode.
+*   **`--query` (Required for CLI search, interactive prompt for interactive mode):** This is the primary search term. The arXiv API, which the tool uses, searches across various fields including **title**, **abstract**, and **authors**. Therefore, including author names or specific title words in your main `--query` will yield relevant results.
+*   **`--start-date` (Optional):** The start date for filtering search results by publication date in `YYYY-MM-DD` format. Only applicable in command-line search mode.
+*   **`--end-date` (Optional):** The end date for filtering search results by publication date in `YYYY-MM-DD` format. Only applicable in command-line search mode.
 
-In interactive mode, you will be prompted for keywords and an optional date range. The program does not currently support direct filtering by specific fields like "author" or "title" as separate arguments within the interactive search flow, but keywords will match against these fields.
+**Note:** The program does not currently support direct, separate arguments for filtering by specific fields like "author" or "title" (e.g., `--author "John Doe"`). However, as mentioned above, the `--query` argument will search across these fields.
 
 ## 3. How to Download a Paper
 
