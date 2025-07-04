@@ -22,8 +22,8 @@
     *   Filter library by keywords (title, authors, summary).
     *   Sort library by publication date, title, or authors.
     *   Remove papers from the library.
-*   **PDF Download:** Download individual paper PDFs.
-*   **Bulk Download:** Download all papers from your current filtered/sorted library view with a 3-second delay between downloads to respect arXiv API terms.
+*   **PDF Download:** Download individual paper PDFs. A 3-second delay is introduced before each download to respect arXiv API guidelines.
+*   **Bulk Download:** Download all papers from your current filtered/sorted library view, with a 3-second delay between each download to respect arXiv API terms.
 *   **Detailed Paper View:** Display comprehensive details for any selected paper, including abstract and PDF URL.
 
 ## Installation
