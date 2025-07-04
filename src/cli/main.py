@@ -54,6 +54,35 @@ def play_theme():
     except Exception as e:
         print(f"Error opening web browser: {e}")
 
+def _perform_search_and_display(query, start_date=None, end_date=None):
+    loading_animation = LoadingAnimation("Searching arXiv")
+    loading_animation.start()
+    try:
+        papers = search_arxiv(query, start_date=start_date, end_date=end_date)
+        loading_animation.stop()
+        if not papers:
+            print("No papers found for your query.")
+            return []
+
+        print_papers_list(papers)
+        return papers
+    except requests.exceptions.RequestException as e:
+        loading_animation.stop()
+        print(f"Error connecting to arXiv API: {e}")
+        return []
+    except Exception as e:
+        loading_animation.stop()
+        print(f"An unexpected error occurred during search: {e}")
+        return []
+
+def perform_cli_search(query, start_date=None, end_date=None):
+    print_arxiv_logo()
+    print(f"Performing CLI search for: '{query}'")
+    if start_date and end_date:
+        print(f"Date range: {start_date} to {end_date}")
+    _perform_search_and_display(query, start_date, end_date)
+    print("CLI search complete.")
+
 def search_papers_menu():
     query = input("Enter search query: ")
     start_date = None
@@ -73,53 +102,40 @@ def search_papers_menu():
             except ValueError:
                 print("Invalid date format. Please use YYYY-MM-DD.")
 
-    loading_animation = LoadingAnimation("Searching arXiv")
-    loading_animation.start()
-    try:
-        papers = search_arxiv(query, start_date=start_date, end_date=end_date)
-        loading_animation.stop()
-        if not papers:
-            print("No papers found for your query.")
-            return
-
-        print_papers_list(papers)
+    papers = _perform_search_and_display(query, start_date, end_date)
+    if not papers:
+        return
         
-        while True:
-            print("\n--- Search Results Options ---")
-            print("Enter paper number for details/actions, 'b' to go back, 'e' to expand, or 'exit' to quit.")
-            action = input("Your choice: ").lower().strip()
+    while True:
+        print("\n--- Search Results Options ---")
+        print("Enter paper number for details/actions, 'b' to go back, 'e' to expand, or 'exit' to quit.")
+        action = input("Your choice: ").lower().strip()
 
-            if action == 'b' or action == 'back':
-                break
-            elif action == 'e' or action == 'expand':
-                expand_action = input("Enter paper number to expand on: ").lower().strip()
-                try:
-                    paper_index = int(expand_action) - 1
-                    if 0 <= paper_index < len(papers):
-                        selected_paper = papers[paper_index]
-                        expand_on_paper(selected_paper)
-                    else:
-                        print("Invalid paper number.")
-                except ValueError:
-                    print("Invalid input. Please enter a number.")
-            elif action == 'exit' or action == 'exit arxiv searcher':
-                raise ExitProgram
-            
+        if action == 'b' or action == 'back':
+            break
+        elif action == 'e' or action == 'expand':
+            expand_action = input("Enter paper number to expand on: ").lower().strip()
             try:
-                paper_index = int(action) - 1
+                paper_index = int(expand_action) - 1
                 if 0 <= paper_index < len(papers):
                     selected_paper = papers[paper_index]
-                    handle_paper_actions(selected_paper)
+                    expand_on_paper(selected_paper)
                 else:
                     print("Invalid paper number.")
             except ValueError:
-                print("Invalid input. Please enter a number, 'b', 'e', or 'exit'.")
-    except requests.exceptions.RequestException as e:
-        loading_animation.stop()
-        print(f"Error connecting to arXiv API: {e}")
-    except Exception as e:
-        loading_animation.stop()
-        print(f"An unexpected error occurred during search: {e}")
+                print("Invalid input. Please enter a number.")
+        elif action == 'exit' or action == 'exit arxiv searcher':
+            raise ExitProgram
+        
+        try:
+            paper_index = int(action) - 1
+            if 0 <= paper_index < len(papers):
+                selected_paper = papers[paper_index]
+                handle_paper_actions(selected_paper)
+            else:
+                print("Invalid paper number.")
+        except ValueError:
+            print("Invalid input. Please enter a number, 'b', 'e', or 'exit'.")
 
 def expand_on_paper(paper):
     print(f"\nExpanding on: {paper['title']}")
@@ -342,6 +358,3 @@ def handle_paper_actions(paper, is_library_paper=False):
             raise ExitProgram
         else:
             print("Invalid choice. Please try again.")
-
-if __name__ == "__main__":
-    main_menu()
