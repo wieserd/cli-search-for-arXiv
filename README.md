@@ -42,13 +42,33 @@
 
 ## Usage
 
-To run the arXiv CLI Search, execute the `run.py` script from the project's root directory:
+To run the arXiv CLI Search, execute the `run.py` script from the project's root directory. The tool supports both an interactive menu and direct command-line searches.
+
+### Interactive Mode
+
+To start the interactive menu:
 
 ```bash
 python run.py
 ```
 
 The program will present you with a main menu, starting with a visually enhanced arXiv logo:
+
+### Command-Line Search Mode
+
+To perform a direct search from the command line, use the `--query` argument. You can also optionally specify a date range using `--start-date` and `--end-date`.
+
+```bash
+python run.py --query "your search terms" [--start-date YYYY-MM-DD] [--end-date YYYY-MM-DD]
+```
+
+Example:
+
+```bash
+python run.py --query "quantum entanglement" --start-date 2020-01-01 --end-date 2020-12-31
+```
+
+After executing a command-line search, the results will be displayed, and the program will exit.
 
 ```
 # ASCII art logo will appear here
