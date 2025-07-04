@@ -54,11 +54,11 @@ def play_theme():
     except Exception as e:
         print(f"Error opening web browser: {e}")
 
-def _perform_search_and_display(query, start_date=None, end_date=None):
+def _perform_search_and_display(query=None, author=None, title=None, start_date=None, end_date=None):
     loading_animation = LoadingAnimation("Searching arXiv")
     loading_animation.start()
     try:
-        papers = search_arxiv(query, start_date=start_date, end_date=end_date)
+        papers = search_arxiv(query=query, author=author, title=title, start_date=start_date, end_date=end_date)
         loading_animation.stop()
         if not papers:
             print("No papers found for your query.")
@@ -70,21 +70,54 @@ def _perform_search_and_display(query, start_date=None, end_date=None):
         loading_animation.stop()
         print(f"Error connecting to arXiv API: {e}")
         return []
+    except ValueError as e:
+        loading_animation.stop()
+        print(f"Search error: {e}")
+        return []
     except Exception as e:
         loading_animation.stop()
         print(f"An unexpected error occurred during search: {e}")
         return []
 
-def perform_cli_search(query, start_date=None, end_date=None):
+def perform_cli_search(query=None, author=None, title=None, start_date=None, end_date=None):
     print_arxiv_logo()
-    print(f"Performing CLI search for: '{query}'")
+    print("Performing CLI search...")
+    if query: print(f"Query: '{query}'")
+    if author: print(f"Author: '{author}'")
+    if title: print(f"Title: '{title}'")
     if start_date and end_date:
         print(f"Date range: {start_date} to {end_date}")
-    _perform_search_and_display(query, start_date, end_date)
+    _perform_search_and_display(query, author, title, start_date, end_date)
     print("CLI search complete.")
 
+def perform_cli_download(arxiv_id):
+    print_arxiv_logo()
+    print(f"Attempting to download paper with arXiv ID: {arxiv_id}")
+    try:
+        # Search for the paper by its ID
+        papers = search_arxiv(query=f"id:{arxiv_id}", max_results=1)
+        if papers:
+            paper = papers[0]
+            if paper['pdf_url']:
+                print(f"Found paper: {paper['title']}. Downloading...")
+                download_pdf(paper['pdf_url'], paper['id'])
+                print("Download complete.")
+            else:
+                print(f"PDF URL not available for paper {arxiv_id}.")
+        else:
+            print(f"Paper with arXiv ID {arxiv_id} not found.")
+    except requests.exceptions.RequestException as e:
+        print(f"Error connecting to arXiv API: {e}")
+    except Exception as e:
+        print(f"An unexpected error occurred during download: {e}")
+    print("CLI download process finished.")
+
 def search_papers_menu():
-    query = input("Enter search query: ")
+    print("\n--- Interactive Search ---")
+    query = input("Enter general keywords (optional): ").strip()
+    author = input("Enter author name (optional): ").strip()
+    title = input("Enter title keywords (optional): ").strip()
+
     start_date = None
     end_date = None
 
@@ -102,7 +135,12 @@ def search_papers_menu():
             except ValueError:
                 print("Invalid date format. Please use YYYY-MM-DD.")
 
-    papers = _perform_search_and_display(query, start_date, end_date)
+    # Ensure at least one search parameter is provided for interactive search
+    if not query and not author and not title:
+        print("At least one of general keywords, author, or title must be provided for search.")
+        return
+
+    papers = _perform_search_and_display(query if query else None, author if author else None, title if title else None, start_date, end_date)
     if not papers:
         return
         
