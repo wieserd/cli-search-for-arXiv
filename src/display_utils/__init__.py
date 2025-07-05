@@ -23,6 +23,9 @@ def print_papers_list(papers):
         console.print(f"   [bold]Authors:[/bold] {', '.join(paper['authors'])}")
         console.print(f"   [bold]Published:[/bold] {paper['published']}")
         console.print(f"   [bold]Categories:[/bold] {', '.join(paper['categories'])}")
+        console.print(f"   [bold]arXiv ID:[/bold] {paper['id']}")
+        console.print(f"   [bold]PDF URL:[/bold] {paper['pdf_url']}")
+
 
 def print_paper_details(paper):
     console.print(f"\n[bold yellow]--- Paper Details ---[/bold yellow]")
