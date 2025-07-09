@@ -102,7 +102,7 @@ def perform_cli_download(arxiv_id):
                 print(f"Found paper: {paper['title']}.")
                 print("Waiting 3 seconds before download to respect arXiv guidelines...")
                 time.sleep(3)
-                download_pdf(paper['pdf_url'], paper['id'])
+                download_pdf(paper['pdf_url'], paper['id'], paper['title'])
                 print("Download complete.")
             else:
                 print(f"PDF URL not available for paper {arxiv_id}.")
@@ -243,7 +243,7 @@ def bulk_download_papers(papers_to_download):
         if paper['pdf_url']:
             print("Waiting 3 seconds before download to respect arXiv guidelines...")
             time.sleep(3)
-            download_pdf(paper['pdf_url'], paper['id'])
+            download_pdf(paper['pdf_url'], paper['id'], paper['title'])
         else:
             print(f"PDF URL not available for {paper['title']}.")
     print("Bulk download complete.")
@@ -329,7 +329,7 @@ def handle_paper_actions(paper, is_library_paper=False):
             if paper['pdf_url']:
                 print("Waiting 3 seconds before download to respect arXiv guidelines...")
                 time.sleep(3)
-                download_pdf(paper['pdf_url'], paper['id'])
+                download_pdf(paper['pdf_url'], paper['id'], paper['title'])
             else:
                 print("PDF URL not available for this paper.")
         elif action == '2':
