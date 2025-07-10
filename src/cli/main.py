@@ -95,7 +95,7 @@ def perform_cli_download(arxiv_id):
     print(f"Attempting to download paper with arXiv ID: {arxiv_id}")
     try:
         # Search for the paper by its ID
-        papers = search_arxiv(query=f"id:{arxiv_id}", max_results=1)
+        papers = search_arxiv(id_list=arxiv_id, max_results=1)
         if papers:
             paper = papers[0]
             if paper['pdf_url']:
