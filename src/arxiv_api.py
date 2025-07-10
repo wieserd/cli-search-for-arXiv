@@ -4,27 +4,34 @@ from datetime import datetime
 
 ARXIV_API_URL = "http://export.arxiv.org/api/query"
 
-def search_arxiv(query=None, author=None, title=None, max_results=10, start_date=None, end_date=None, start=0):
-    search_parts = []
-    if query:
-        search_parts.append(query)
-    if author:
-        search_parts.append(f"au:{author}")
-    if title:
-        search_parts.append(f"ti:{title}")
+def search_arxiv(query=None, author=None, title=None, id_list=None, max_results=10, start_date=None, end_date=None, start=0):
+    if id_list:
+        params = {
+            "id_list": ",".join(id_list) if isinstance(id_list, list) else id_list,
+            "max_results": max_results,
+            "start": start
+        }
+    else:
+        search_parts = []
+        if query:
+            search_parts.append(query)
+        if author:
+            search_parts.append(f"au:{author}")
+        if title:
+            search_parts.append(f"ti:{title}")
 
-    if not search_parts:
-        raise ValueError("At least one search parameter (query, author, or title) must be provided.")
+        if not search_parts:
+            raise ValueError("At least one search parameter (query, author, title, or id_list) must be provided.")
 
-    combined_query = " AND ".join(search_parts)
+        combined_query = " AND ".join(search_parts)
 
-    params = {
-        "search_query": combined_query,
-        "max_results": max_results,
-        "sortBy": "relevance",
-        "sortOrder": "descending",
-        "start": start
-    }
+        params = {
+            "search_query": combined_query,
+            "max_results": max_results,
+            "sortBy": "relevance",
+            "sortOrder": "descending",
+            "start": start
+        }
 
     # Add date range to query if provided
     if start_date and end_date:
