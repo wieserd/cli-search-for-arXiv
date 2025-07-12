@@ -7,6 +7,7 @@ import requests # Import requests to catch its exceptions
 from datetime import datetime
 import time # Import time for delays
 import webbrowser # Import webbrowser for opening URLs
+from src.cleanup import cleanup_downloaded_pdfs # Import the cleanup function
 
 class ExitProgram(Exception):
     """Custom exception to signal program exit."""
@@ -104,6 +105,7 @@ def perform_cli_download(arxiv_id):
                 time.sleep(3)
                 download_pdf(paper['pdf_url'], paper['id'], paper['title'])
                 print("Download complete.")
+                cleanup_downloaded_pdfs()
             else:
                 print(f"PDF URL not available for paper {arxiv_id}.")
         else:
@@ -247,6 +249,7 @@ def bulk_download_papers(papers_to_download):
         else:
             print(f"PDF URL not available for {paper['title']}.")
     print("Bulk download complete.")
+    cleanup_downloaded_pdfs()
 
 def view_library_menu():
     full_library = load_library()
@@ -330,6 +333,7 @@ def handle_paper_actions(paper, is_library_paper=False):
                 print("Waiting 3 seconds before download to respect arXiv guidelines...")
                 time.sleep(3)
                 download_pdf(paper['pdf_url'], paper['id'], paper['title'])
+                cleanup_downloaded_pdfs()
             else:
                 print("PDF URL not available for this paper.")
         elif action == '2':
