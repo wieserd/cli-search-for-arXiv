@@ -9,8 +9,8 @@ def _sanitize_filename(title):
     Sanitizes a string to be used as a valid filename.
     Removes or replaces characters that are not allowed in filenames.
     """
-    # Replace invalid characters with an underscore
-    sanitized_title = re.sub(r'[\\/:*?"<>|]', '_', title)
+    # Replace invalid characters and newlines with an underscore
+    sanitized_title = re.sub(r'[\\/:*?"<>|\n\r]', '_', title)
     # Optionally, you might want to limit the filename length
     return sanitized_title[:200] # Limit to 200 characters
 
